@@ -12,7 +12,7 @@ typedef struct Lista{
     int quant;
 }Lista;
 
-int PQEmpty();
+int PQEmpty(Lista **);
 
 void listar(Lista*);
 

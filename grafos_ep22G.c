@@ -1,4 +1,6 @@
 #include "grafos_ep22G.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 void MakeSet(No *v, int i)
 {

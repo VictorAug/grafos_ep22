@@ -1,5 +1,6 @@
 #include "grafos_ep22PQ.h"
-
+#include <stdio.h>
+#include <stdlib.h>
 void listar(Lista *l)
 {
     int i;
@@ -42,14 +43,15 @@ void PQBuild(Lista **vet)
         PQDec(&(*vet), i);
 }
 
-int PQEmpty()
+int PQEmpty(Lista **l)
 {
-
+    return (*l)->quant = 0 ? 1 : 0;
 }
 
 Lista *PQInit(Vertex size)
 {
     Lista *l = malloc(sizeof(Lista));
+    printf("Checkpoint 2\n");
     l->quant = 0;
     l->Data = malloc(size*sizeof(Dados));
     return l;

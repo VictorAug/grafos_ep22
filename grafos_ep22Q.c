@@ -1,5 +1,6 @@
 #include "grafos_ep22Q.h"
-
+#include <stdio.h>
+#include <stdlib.h>
 static int *q, i;
 
 void QUEUEInit(int v)

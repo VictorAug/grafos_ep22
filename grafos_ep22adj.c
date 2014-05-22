@@ -92,7 +92,7 @@ void adj_dijkstra(adj_Digraph G, Vertex s)
     cst[s] = 0;
     parent[s] = s;
     PQInsert(&l, data);
-    while(!PQEmpty())
+    while(!PQEmpty(&l))
     {
         v = PQDelmin(&l);
         for(p = G->adj[v]; p != NULL; p = p->next)
@@ -228,7 +228,7 @@ void adj_prim2(adj_Digraph G)
     cst[v] = 0;
     fr[v] = v;
     PQInsert(&l,data);
-    while(!PQEmpty())
+    while(!PQEmpty(&l))
     {
         v = PQDelmin(&l);
         parent[v] = fr[v];

@@ -1,5 +1,6 @@
 #include "grafos_ep22m.h"
 #include "grafos_ep22Q.h"
+#include "grafos_ep22PQ.h"
 double **custo, **ccst;
 
 double **MATRIXDouble(int r, int c, double val)
@@ -45,23 +46,35 @@ void Matriz_DIGRAPHInsertA(m_Digraph G, Vertex v, Vertex w, double cst)
 void Matriz_dijkstra(m_Digraph G, Vertex s)
 {
     Vertex v, w;
-    custo = G->adj;
-    for(v = 0; v < G->V; v++)
-    {
+    int i;
+    //custo = G->adj;
+    for(v = 0; v < G->V; v++){
         cst[v] = INFINITO;
         parent[v] = -1;
     }
-    QUEUEInit(G->V);
-    cst[s] = 0;
-    parent[s] = s;
-    QUEUEPut(s);
-    while(!QUEUEEmpty())
-    {
-        v = QUEUEGet();
+    Lista *l = malloc(sizeof(Lista));
+    printf("checkpoint\n");
+    Dados *Vertice = malloc(sizeof(Dados));
+    Vertice->prior = cst[s] = 0;
+    Vertice->v = parent[s] = s;
+    PQInsert(&l, Vertice);
+    while(!PQEmpty(&l)){
+        v = PQDelmin(&l);
+        for(i=0; G->adj[v][i]<G->V; i++)
+            if(G->adj[v][i]!=INFINITO && cst[i]==INFINITO){
+                parent[i] = v;
+                Vertice->prior = cst[i] = cst[v]+G->adj[v][i];
+                Vertice->v = i;
+                PQInsert(&l, Vertice);
+            }else if(cst[i] > cst[v]+G->adj[v][i]){
+                parent[i] = v;
+                cst[i] = cst[v] + G->adj[v][i];
+                PQDec(&l, cst[i]);
+            }
     }
 }
 
-void Matriz_BELLMAN_ford2(m_Digraph G, Vertex s)
+/*void Matriz_BELLMAN_ford2(m_Digraph G, Vertex s)
 {
     Vertex v, w, k;
     double d;
@@ -80,21 +93,84 @@ void Matriz_BELLMAN_ford2(m_Digraph G, Vertex s)
                 d = 0;
             }
     Matriz_DIGRAPHShowCST(G);
+}*/
+
+void Matriz_BELLMAN_ford1(m_Digraph G, Vertex s){
+    Vertex v, w, k; double d; Vertex custo[G->V][G->V];
+    for(v=0; v<G->V; v++)
+        custo[0][v] = INFINITO;
+    custo[0][s] = 0;
+    for(k=1; k<G->V; k++)
+        for(w=0; w<G->V; w++){
+            custo[k][w] = custo[k-1][w];
+            for(v=0; v<G->V; v++){
+                d = custo[k-1][v] + G->adj[v][w];
+                if(custo[k][w] > d)
+                    custo[k][w] = d;
+            }
+        }
+    //print matriz de custos
+    for(k=0; k<G->V; k++){
+        printf("%d|\t", k);
+        for(v=0; v<G->V; v++)
+            printf("%d\t", custo[k][v]);
+    }
 }
 
-void Matriz_FLOYD_WARCHALL(m_Digraph G)
-{
-    Vertex v, s, t, k; double d;
-    for(s = 0; s < G->V; s++)
-        for(v = 0; v < G->V; v++)
-            ccst[s][t] = G->adj[s][t];
-    for(k = 1; k < G->V; k++)
-        for(s = 0; s < G->V; s++)
-            for(t = 0; t < G->V; t++){
-                d = ccst[s][k-1] + ccst[k-1][t];
-                if(ccst[s][t] > d)
-                    ccst[s][t] = d;
+void Matriz_BELLMAN_ford2(m_Digraph G, Vertex s){ //works
+    Vertex v, w, k; double d;
+    for(v=0; v<G->V; v++)
+        cst[v] = INFINITO;
+    cst[s] = 0;
+    for(k=1; k<G->V; k++)
+        for(w=0; w<G->V; w++){
+            for(v=0; v<G->V; v++){
+                d=cst[v] + G->adj[v][w];
+                if(cst[w] > d)
+                    cst[w]=d;
             }
+        }
+}
+
+/*
+void Matriz_FLOYD_WARSHALL(m_Digraph G)
+{
+    Vertex v, s=0, t=0, k; double d; Vertex custo[G->V][G->V][G->V];
+    printf("OK\n");
+    for(v = 0; v < G->V; v++){
+        custo[0][s][t] = G->adj[s][t];
+        printf("%d\n", v);
+    }
+    for(k=1; k<G->V; k++)
+        for(s=0; s<G->V; s++)
+            for(t=0; t<G->V; t++){
+                custo[k][s][t] = custo[k-1][s][t];
+                d = custo[k-1][s][k-1]+custo[k-1][k-1][t];
+                if(custo[k][s][t]>d)
+                    custo[k][s][t] = d;
+            }
+
+//    Matriz_DIGRAPHShowCusto(G, custo);
+}*/
+
+void Matriz_FLOYD_WARSHALL(m_Digraph G)
+{
+    Vertex v, s, t, k; double d; Vertex custo[G->V][G->V];
+    for(v = 0; v < G->V; v++)
+        for(k=0; k<G->V; k++)
+        custo[v][k] = G->adj[v][k];
+    for(k=1; k<G->V; k++)
+        for(s=0; s<G->V; s++)
+            for(t=0; t<G->V; t++){
+                if(custo[s][k] + custo[k][t] < custo[s][t])
+                    custo[s][t] = custo[s][k] + custo[k][t];
+            }
+    for(k=0; k<G->V; k++){
+        printf("%d|\t", k);
+        for(v=0; v<G->V; v++)
+            printf("%d\t", custo[k][v]);
+        printf("\n");
+    }
 //    Matriz_DIGRAPHShowCusto(G, custo);
 }
 
@@ -103,15 +179,15 @@ void Matriz_DIGRAPHShow(m_Digraph G)
 	Vertex v, w;
 	printf("\t");
 	for(v = 0; v < G->V; v++)
-        printf("|  %3.2d \t",v);
+        printf("|  %3.1d \t",v);
     printf("\n--------+-------");
     for(v = 0; v < G->V-1; v++)
         printf("+-------");
 	for(v = 0; v < G->V; v++){
-		printf("\n    %3.2d\t", v);
+		printf("\n    %3.1d\t", v);
 		for(w = 0; w < G->V; w++){
 			if(G->adj[v][w] != INFINITO)
-				printf("| %3.2lf\t",G->adj[v][w]);
+				printf("| %3.1lf\t",G->adj[v][w]);
 			else printf("|   *\t");
 		}
 	}
