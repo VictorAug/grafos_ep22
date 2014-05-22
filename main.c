@@ -1,6 +1,6 @@
 #include "grafos_ep22adj.h"
 #include "grafos_ep22m.h"
-
+//oisahfap
 int main()
 {
 	int m1,m2,m3,v,w,x1 = 0,d1 = 0,d2 = 0,x2 = 0;
