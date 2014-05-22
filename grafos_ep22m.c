@@ -1,10 +1,10 @@
 #include "grafos_ep22m.h"
 #include "grafos_ep22Q.h"
 #include "grafos_ep22PQ.h"
+
 double **custo, **ccst;
 
-double **MATRIXDouble(int r, int c, double val)
-{
+double **MATRIXDouble(int r, int c, double val){
     int i, j;
     double **m = malloc(r*sizeof(double*));
     for(i = 0; i < r; i++)
@@ -15,8 +15,7 @@ double **MATRIXDouble(int r, int c, double val)
     return m;
 }
 
-m_Digraph Matriz_DIGRAPHInit(int V)
-{
+m_Digraph Matriz_DIGRAPHInit(int V){
     m_Digraph G = malloc(sizeof(m_Digraph));
     G->V = V;
     G->A = 0;
@@ -24,8 +23,7 @@ m_Digraph Matriz_DIGRAPHInit(int V)
     return G;
 }
 
-void Matriz_GRAPHInsertE(m_Digraph G, Vertex v, Vertex w, double cst)
-{
+void Matriz_GRAPHInsertE(m_Digraph G, Vertex v, Vertex w, double cst){
 	if(v < G->V && w < G->V && v != w)
     {
         Matriz_DIGRAPHInsertA(G,v,w,cst);
@@ -34,8 +32,7 @@ void Matriz_GRAPHInsertE(m_Digraph G, Vertex v, Vertex w, double cst)
 	}
 }
 
-void Matriz_DIGRAPHInsertA(m_Digraph G, Vertex v, Vertex w, double cst)
-{
+void Matriz_DIGRAPHInsertA(m_Digraph G, Vertex v, Vertex w, double cst){
     if(v != w && G->adj[v][w] == INFINITO)
     {
         G->adj[v][w] = cst;
@@ -43,36 +40,6 @@ void Matriz_DIGRAPHInsertA(m_Digraph G, Vertex v, Vertex w, double cst)
     }
 }
 
-void Matriz_dijkstra(m_Digraph G, Vertex s)
-{
-    Vertex v, w;
-    int i;
-    //custo = G->adj;
-    for(v = 0; v < G->V; v++){
-        cst[v] = INFINITO;
-        parent[v] = -1;
-    }
-    Lista *l = malloc(sizeof(Lista));
-    printf("checkpoint\n");
-    Dados *Vertice = malloc(sizeof(Dados));
-    Vertice->prior = cst[s] = 0;
-    Vertice->v = parent[s] = s;
-    PQInsert(&l, Vertice);
-    while(!PQEmpty(&l)){
-        v = PQDelmin(&l);
-        for(i=0; G->adj[v][i]<G->V; i++)
-            if(G->adj[v][i]!=INFINITO && cst[i]==INFINITO){
-                parent[i] = v;
-                Vertice->prior = cst[i] = cst[v]+G->adj[v][i];
-                Vertice->v = i;
-                PQInsert(&l, Vertice);
-            }else if(cst[i] > cst[v]+G->adj[v][i]){
-                parent[i] = v;
-                cst[i] = cst[v] + G->adj[v][i];
-                PQDec(&l, cst[i]);
-            }
-    }
-}
 
 /*void Matriz_BELLMAN_ford2(m_Digraph G, Vertex s)
 {
@@ -95,7 +62,7 @@ void Matriz_dijkstra(m_Digraph G, Vertex s)
     Matriz_DIGRAPHShowCST(G);
 }*/
 
-void Matriz_BELLMAN_ford1(m_Digraph G, Vertex s){
+void Matriz_BELLMAN_ford1(m_Digraph G, Vertex s){//Works
     Vertex v, w, k; double d; Vertex custo[G->V][G->V];
     for(v=0; v<G->V; v++)
         custo[0][v] = INFINITO;
@@ -153,8 +120,7 @@ void Matriz_FLOYD_WARSHALL(m_Digraph G)
 //    Matriz_DIGRAPHShowCusto(G, custo);
 }*/
 
-void Matriz_FLOYD_WARSHALL(m_Digraph G)
-{
+void Matriz_FLOYD_WARSHALL(m_Digraph G){//Works
     Vertex v, s, t, k; double d; Vertex custo[G->V][G->V];
     for(v = 0; v < G->V; v++)
         for(k=0; k<G->V; k++)
@@ -171,27 +137,27 @@ void Matriz_FLOYD_WARSHALL(m_Digraph G)
             printf("%d\t", custo[k][v]);
         printf("\n");
     }
-//    Matriz_DIGRAPHShowCusto(G, custo);
+    //    Matriz_DIGRAPHShowCusto(G, custo);
 }
 
 void Matriz_DIGRAPHShow(m_Digraph G)
 {
-	Vertex v, w;
-	printf("\t");
-	for(v = 0; v < G->V; v++)
+    Vertex v, w;
+    printf("\t");
+    for(v = 0; v < G->V; v++)
         printf("|  %3.1d \t",v);
     printf("\n--------+-------");
     for(v = 0; v < G->V-1; v++)
         printf("+-------");
-	for(v = 0; v < G->V; v++){
-		printf("\n    %3.1d\t", v);
-		for(w = 0; w < G->V; w++){
-			if(G->adj[v][w] != INFINITO)
-				printf("| %3.1lf\t",G->adj[v][w]);
-			else printf("|   *\t");
-		}
-	}
-	printf("\n");
+    for(v = 0; v < G->V; v++){
+        printf("\n    %3.1d\t", v);
+        for(w = 0; w < G->V; w++){
+            if(G->adj[v][w] != INFINITO)
+                printf("| %3.1lf\t",G->adj[v][w]);
+            else printf("|   *\t");
+        }
+    }
+    printf("\n");
 }
 
 void Matriz_DIGRAPHShowCST(m_Digraph G)
@@ -288,11 +254,13 @@ void Matriz_DIGRAPHdel(m_Digraph G)
     free(G);
 }
 
+/*
 void Matriz_prim1(m_Digraph G)
 {
     Vertex v,w;
-    for (v = 0; v < G->V; v++)
-    {
+    double custo[maxV], fr[maxV];
+
+    for (v = 0; v<G->V; v++){
         cst[v] = maxCST;
         parent[v] = -1;
         fr[v] = -1;
@@ -317,5 +285,40 @@ void Matriz_prim1(m_Digraph G)
     Matriz_DIGRAPHShowCST(G);
     Matriz_DIGRAPHShowPARENT(G);
 }
-
-
+*/
+void Matriz_dijkstra(m_Digraph G, Vertex s)
+{
+    Vertex v, w;
+    int i;
+    //custo = G->adj;
+    for(v = 0; v < G->V; v++){
+        cst[v] = INFINITO;
+        parent[v] = -1;
+    }
+    Lista *l = PQInit(G->V);
+    Dados *Vertice = malloc(sizeof(Dados));
+    Vertice->prior = cst[s] = 0;
+    Vertice->v = parent[s] = s;
+    PQInsert(&l, Vertice);
+    while(!PQEmpty(&l)){
+        v = PQDelmin(&l);
+        printf("%d\n\n", v);
+        listar(l);
+        for(i=0; i<G->V; i++)
+            if(i!=v)
+            if(G->adj[v][i]!=INFINITO && cst[i]==INFINITO){
+                parent[i] = v;
+                Vertice->prior = cst[i] = cst[v]+G->adj[v][i];
+                Vertice->v = i;
+                PQInsert(&l, Vertice);
+                listar(l);
+            }else if(cst[i] > cst[v]+G->adj[v][i]){
+                parent[i] = v;
+                cst[i] = cst[v] + G->adj[v][i];
+                PQDec(&l, cst[i]);
+                listar(l);
+            }
+    }
+    Matriz_DIGRAPHShowCST(G);
+    Matriz_DIGRAPHShowPARENT(G);
+}

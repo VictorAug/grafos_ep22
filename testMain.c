@@ -2,16 +2,17 @@
 #include <stdlib.h>
 #include "grafos_ep22m.h"
 #include "grafos_ep22adj.h"
+#include "grafos_ep22PQ.h"
 
 double cost[10];
 
 int main()
 {
 	int m1,m2,m3,v,w,x1 = 0,d1 = 0,d2 = 0,x2 = 0;
-	
+		
 	adj_Digraph AG, AD;
 	m_Digraph MG, MD;
-	MG = Matriz_DIGRAPHInit(4);
+	MG = Matriz_DIGRAPHInit(6);
 	Matriz_DIGRAPHShow(MG);
 	printf("\n");
 /*	Matriz_GRAPHInsertE(MG,0,4,4);
@@ -35,14 +36,30 @@ int main()
 	Matriz_GRAPHInsertE(MG,2,6,1);
 	Matriz_GRAPHInsertE(MG,3,7,15);
 	Matriz_GRAPHInsertE(MG,3,5,2);*/
-	Matriz_DIGRAPHInsertA(MG,0,1,5);
-	Matriz_DIGRAPHInsertA(MG,0,3,10);
-	Matriz_DIGRAPHInsertA(MG,1,2,3);
-	Matriz_DIGRAPHInsertA(MG,2,3,1);
+	Matriz_GRAPHInsertE(MG,0,1,5);
+	Matriz_GRAPHInsertE(MG,0,3,10);
+	Matriz_GRAPHInsertE(MG,1,2,3);
+	Matriz_GRAPHInsertE(MG,2,3,1);
 	Matriz_DIGRAPHShow(MG);
 	printf("\n");
-	//Matriz_dijkstra(MG, 2);
-	Matriz_FLOYD_WARSHALL(MG);
-	//Matriz_DIGRAPHShowCST(MG);
-	//Matriz_DIGRAPHShowPARENT(MG);
+	Matriz_dijkstra(MG, 0);
+	Matriz_dijkstra(MG, 1);
+	Matriz_dijkstra(MG, 2);
+	Matriz_dijkstra(MG, 3);
+	//Matriz_FLOYD_WARSHALL(MG);
+/*	Lista *l = PQInit(10);
+	Dados *data = malloc(sizeof(Dados));
+	data->v = 5;
+	data->prior = 10;
+	PQInsert(&l, data);
+		data->v = 6;
+	data->prior = 5;
+	PQInsert(&l, data);
+		data->v = 8;
+	data->prior = 2;
+	PQInsert(&l, data);
+		data->v = 1;
+	data->prior = 7;
+	PQInsert(&l, data);
+	listar(l);*/
 }

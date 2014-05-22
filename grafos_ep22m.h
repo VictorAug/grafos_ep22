@@ -1,6 +1,7 @@
 #ifndef GRAFOS_EP22M_H_INCLUDED
 #define GRAFOS_EP22M_H_INCLUDED
 #include "grafos_ep22.h"
+#include "grafos_ep22PQ.h"
 
 struct m_digraph{
     int V;
@@ -21,7 +22,7 @@ void Matriz_DIGRAPHInsertA(m_Digraph, Vertex, Vertex, double);
 
 void Matriz_BELLMAN_ford2(m_Digraph, Vertex);
 
-void Matriz_FLOYD_WARCHALL(m_Digraph);
+void Matriz_FLOYD_WARSHALL(m_Digraph);
 
 void Matriz_DIGRAPHShowTS(m_Digraph);
 

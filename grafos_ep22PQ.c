@@ -5,7 +5,7 @@ void listar(Lista *l)
 {
     int i;
     for (i = 0; i < l->quant; i++)
-        printf("%d ----- %d ----- %d\n", i+1, l->Data[i].v, l->Data[i].prior);
+        printf("%d ----- %d ----- %d\n", l->quant, l->Data[i].v, l->Data[i].prior);
 }
 
 void PQDec(Lista **vet, int i)
@@ -29,7 +29,7 @@ Vertex PQDelmin(Lista **l)
 {
     if((*l)->quant < 1)
         return 0;
-    int min = (*l)->Data[0].prior;
+    int min = (*l)->Data[0].v;
     (*l)->Data[0].prior = (*l)->Data[--(*l)->quant].prior;
     PQDec(&(*l), 1);
     return min;
@@ -43,15 +43,13 @@ void PQBuild(Lista **vet)
         PQDec(&(*vet), i);
 }
 
-int PQEmpty(Lista **l)
-{
-    return (*l)->quant = 0 ? 1 : 0;
+int PQEmpty(Lista **l){
+    return (*l)->quant == 0 ? 1 : 0;
 }
 
 Lista *PQInit(Vertex size)
 {
     Lista *l = malloc(sizeof(Lista));
-    printf("Checkpoint 2\n");
     l->quant = 0;
     l->Data = malloc(size*sizeof(Dados));
     return l;
