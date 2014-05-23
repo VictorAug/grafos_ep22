@@ -301,22 +301,22 @@ void Matriz_dijkstra(m_Digraph G, Vertex s)
     Vertice->v = parent[s] = s;
     PQInsert(&l, Vertice);
     while(!PQEmpty(&l)){
-        v = PQDelmin(&l);
-        printf("%d\n\n", v);
         listar(l);
+        v = PQDelmin(&l);
+        printf("-- %d --\n", v);
+        listar(l);
+        printf("\n\n\n");
         for(i=0; i<G->V; i++)
-            if(i!=v)
             if(G->adj[v][i]!=INFINITO && cst[i]==INFINITO){
                 parent[i] = v;
                 Vertice->prior = cst[i] = cst[v]+G->adj[v][i];
                 Vertice->v = i;
                 PQInsert(&l, Vertice);
-                listar(l);
             }else if(cst[i] > cst[v]+G->adj[v][i]){
                 parent[i] = v;
                 cst[i] = cst[v] + G->adj[v][i];
-                PQDec(&l, cst[i]);
-                listar(l);
+                //PQDec(&l, cst[i]);
+                PQBuild(&l);
             }
     }
     Matriz_DIGRAPHShowCST(G);

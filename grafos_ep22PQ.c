@@ -1,23 +1,22 @@
 #include "grafos_ep22PQ.h"
 #include <stdio.h>
 #include <stdlib.h>
-void listar(Lista *l)
-{
+void listar(Lista *l){
     int i;
     for (i = 0; i < l->quant; i++)
-        printf("%d ----- %d ----- %d\n", l->quant, l->Data[i].v, l->Data[i].prior);
+        printf("%d ----- %d\n", l->Data[i].v, l->Data[i].prior);
+    printf("\n");
 }
 
-void PQDec(Lista **vet, int i)
-{
+void PQDec(Lista **vet, int i){
     int l = 2*i, r = (2*i)+1, menor=0;
     if(l <= (*vet)->quant  && (*vet)->Data[l-1].prior < (*vet)->Data[i-1].prior)
         menor = l-1;
     else
         menor = i-1;
-    if(r <= (*vet)->quant  && (*vet)->Data[r-1].prior < (*vet)->Data[menor].prior)
-        menor = r - 1;
-    if(menor != i - 1){
+    if(r<=(*vet)->quant  && (*vet)->Data[r-1].prior<(*vet)->Data[menor].prior)
+        menor = r-1;
+    if(menor!=i-1){
         int buffer = (*vet)->Data[menor].prior;
         (*vet)->Data[menor].prior = (*vet)->Data[i-1].prior;
         (*vet)->Data[i-1].prior = buffer;
