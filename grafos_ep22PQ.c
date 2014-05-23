@@ -29,7 +29,7 @@ Vertex PQDelmin(Lista **l)
     if((*l)->quant < 1)
         return 0;
     int min = (*l)->Data[0].v;
-    (*l)->Data[0].prior = (*l)->Data[--(*l)->quant].prior;
+    (*l)->Data[0] = (*l)->Data[--(*l)->quant-1];
     PQDec(&(*l), 1);
     return min;
 }
