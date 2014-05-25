@@ -252,7 +252,6 @@ void Matriz_DIGRAPHShowTS(m_Digraph G)
 void Matriz_DIGRAPHdel(m_Digraph G){
     free(G);
 }
-
 void Matriz_prim1(m_Digraph G){
     Vertex v,w;
     double custo[G->V], fr[G->V];
