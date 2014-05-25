@@ -3,8 +3,7 @@
 #include "grafos_ep22Q.h"
 #include "grafos_ep22PQ.h"
 
-link NEW(Vertex w, double cst, link next)
-{
+link NEW(Vertex w, double cst, link next){
     link x = malloc(sizeof *x);
     x->w = w;
     x->cst = cst;
@@ -12,8 +11,7 @@ link NEW(Vertex w, double cst, link next)
     return x;
 }
 
-adj_Digraph adj_DIGRAPHInit(int V)
-{
+adj_Digraph adj_DIGRAPHInit(int V){
     Vertex v;
     adj_Digraph G = malloc(sizeof *G);
     G->V = V;
@@ -24,8 +22,7 @@ adj_Digraph adj_DIGRAPHInit(int V)
     return G;
 }
 
-void adj_DIGRAPHInsertA(adj_Digraph G, Vertex v, Vertex w, double cst)
-{
+void adj_DIGRAPHInsertA(adj_Digraph G, Vertex v, Vertex w, double cst){
     link p;
     if(v == w) return;
     for(p = G->adj[v]; p != NULL; p = p->next)
@@ -34,8 +31,7 @@ void adj_DIGRAPHInsertA(adj_Digraph G, Vertex v, Vertex w, double cst)
     G->A++;
 }
 
-int adj_GRAPHInsertE(adj_Digraph G, Vertex v, Vertex w, double cst)
-{
+int adj_GRAPHInsertE(adj_Digraph G, Vertex v, Vertex w, double cst){
 	if(G->V > v && G->V > w && v != w)
     {
 		adj_DIGRAPHInsertA(G,w,v,cst);
@@ -45,8 +41,7 @@ int adj_GRAPHInsertE(adj_Digraph G, Vertex v, Vertex w, double cst)
 	else return 0;
 }
 
-void adj_DIGRAPHShow(adj_Digraph G)
-{
+void adj_DIGRAPHShow(adj_Digraph G){
 	Vertex v;
 	link p;
 	for (v = 0; v < G->V; v++)

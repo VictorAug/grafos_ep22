@@ -249,32 +249,27 @@ void Matriz_DIGRAPHShowTS(m_Digraph G)
     printf("\n\n");
 }
 
-void Matriz_DIGRAPHdel(m_Digraph G)
-{
+void Matriz_DIGRAPHdel(m_Digraph G){
     free(G);
 }
 
-/*
-void Matriz_prim1(m_Digraph G)
-{
+void Matriz_prim1(m_Digraph G){
     Vertex v,w;
-    double custo[maxV], fr[maxV];
-
+    double custo[G->V], fr[G->V];
     for (v = 0; v<G->V; v++){
-        cst[v] = maxCST;
+        cst[v] = INFINITO;
         parent[v] = -1;
         fr[v] = -1;
     }
     v = 0;
     cst[v] = 0;
     fr[v] = v;
-    while(1)
-    {
-        double minCST = (double)maxCST;
+    while(1){
+        double minCST = INFINITO;
         for(w = 0; w < G->V; w++)
-            if(parent[w] == -1 && minCST)
+            if(parent[w] == -1 && minCST>cst[w])
                 minCST = cst[v=w];
-        if(minCST == maxCST) break;
+        if(minCST == INFINITO) break;
         parent[v] = fr[v];
         for(w = 0; w < G->V; w++)
             if(parent[w] == -1 && cst[w] > G->adj[v][w]){
@@ -282,15 +277,38 @@ void Matriz_prim1(m_Digraph G)
                 fr[w] = v;
             }
     }
-    Matriz_DIGRAPHShowCST(G);
-    Matriz_DIGRAPHShowPARENT(G);
+    //Matriz_DIGRAPHShowCST(G);
+    //Matriz_DIGRAPHShowPARENT(G);
+    
+    printf("Vertex\t");
+    for(v=0; v<G->V; v++)
+        printf("%d\t", v);
+    printf("\nCusto\t");
+    for(v=0; v<G->V; v++)
+        printf("%2.1f\t", cst[v]);
+    printf("\n\n");
+
+    printf("Vertex\t");
+    for(v=0; v<G->V; v++)
+        printf("%d\t", v);
+    printf("\nParent\t");
+    for(v=0; v<G->V; v++)
+        printf("%d\t", parent[v]);
+    printf("\n\n");
+
+
+    printf("Vertex\t");
+    for(v=0; v<G->V; v++)
+        printf("%d\t", v);
+    printf("\nFranja\t");
+    for(v=0; v<G->V; v++)
+        printf("%2.1f\t", fr[v]);
+    printf("\n");//works
 }
-*/
-void Matriz_dijkstra(m_Digraph G, Vertex s)//works
-{
+
+void Matriz_dijkstra(m_Digraph G, Vertex s){//works
     Vertex v, w;
     int i;
-    //custo = G->adj;
     for(v = 0; v < G->V; v++){
         cst[v] = INFINITO;
         parent[v] = -1;
@@ -301,11 +319,7 @@ void Matriz_dijkstra(m_Digraph G, Vertex s)//works
     Vertice->v = parent[s] = s;
     PQInsert(&l, Vertice);
     while(!PQEmpty(&l)){
-        listar(l);
         v = PQDelmin(&l);
-        printf("-- %d --\n", v);
-        listar(l);
-        printf("\n\n\n");
         for(i=0; i<G->V; i++)
             if(G->adj[v][i]!=INFINITO && cst[i]==INFINITO){
                 parent[i] = v;
@@ -315,8 +329,7 @@ void Matriz_dijkstra(m_Digraph G, Vertex s)//works
             }else if(cst[i] > cst[v]+G->adj[v][i]){
                 parent[i] = v;
                 cst[i] = cst[v] + G->adj[v][i];
-                //PQDec(&l, cst[i]);
-                PQBuild(&l);
+                PQDec(&l, cst[i]);
             }
     }
     Matriz_DIGRAPHShowCST(G);
