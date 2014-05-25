@@ -17,9 +17,9 @@ void PQDec(Lista **vet, int i){
     if(r<=(*vet)->quant  && (*vet)->Data[r-1].prior<(*vet)->Data[menor].prior)
         menor = r-1;
     if(menor!=i-1){
-        int buffer = (*vet)->Data[menor].prior;
-        (*vet)->Data[menor].prior = (*vet)->Data[i-1].prior;
-        (*vet)->Data[i-1].prior = buffer;
+        Dados Buf = (*vet)->Data[menor];
+        (*vet)->Data[menor] = (*vet)->Data[i-1];
+        (*vet)->Data[i-1] = Buf;
         PQDec(&(*vet), menor+1);
     }
 }
@@ -29,7 +29,7 @@ Vertex PQDelmin(Lista **l)
     if((*l)->quant < 1)
         return 0;
     int min = (*l)->Data[0].v;
-    (*l)->Data[0] = (*l)->Data[--(*l)->quant-1];
+    (*l)->Data[0] = (*l)->Data[--(*l)->quant];
     PQDec(&(*l), 1);
     return min;
 }

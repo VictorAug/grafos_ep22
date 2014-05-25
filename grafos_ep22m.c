@@ -286,7 +286,7 @@ void Matriz_prim1(m_Digraph G)
     Matriz_DIGRAPHShowPARENT(G);
 }
 */
-void Matriz_dijkstra(m_Digraph G, Vertex s)
+void Matriz_dijkstra(m_Digraph G, Vertex s)//works
 {
     Vertex v, w;
     int i;

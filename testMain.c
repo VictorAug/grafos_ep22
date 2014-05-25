@@ -12,7 +12,7 @@ int main()
 		
 	adj_Digraph AG, AD;
 	m_Digraph MG, MD;
-	MG = Matriz_DIGRAPHInit(5);
+	MG = Matriz_DIGRAPHInit(6);
 	Matriz_DIGRAPHShow(MG);
 	printf("\n");
 /*	Matriz_GRAPHInsertE(MG,0,4,4);
@@ -36,13 +36,16 @@ int main()
 	Matriz_GRAPHInsertE(MG,2,6,1);
 	Matriz_GRAPHInsertE(MG,3,7,15);
 	Matriz_GRAPHInsertE(MG,3,5,2);*/
-	Matriz_DIGRAPHInsertA(MG,0,1,3);
-	Matriz_DIGRAPHInsertA(MG,0,3,6);
-	Matriz_DIGRAPHInsertA(MG,3,1,-1);
-	Matriz_DIGRAPHInsertA(MG,3,4,-7);
-	Matriz_DIGRAPHInsertA(MG,1,4,-2);
+	Matriz_DIGRAPHInsertA(MG,0,2,7);
+	Matriz_DIGRAPHInsertA(MG,0,3,2);
+	Matriz_DIGRAPHInsertA(MG,0,4,4);
+	Matriz_DIGRAPHInsertA(MG,2,4,1);
+	Matriz_DIGRAPHInsertA(MG,3,4,1);
+	Matriz_DIGRAPHInsertA(MG,3,5,3);
 	Matriz_DIGRAPHInsertA(MG,1,2,0);
-	Matriz_DIGRAPHInsertA(MG,4,2,3);
+	Matriz_DIGRAPHInsertA(MG,5,1,2);
+	Matriz_DIGRAPHInsertA(MG,4,1,4);
+	Matriz_DIGRAPHInsertA(MG,4,5,1);
 	Matriz_DIGRAPHShow(MG);
 	printf("\n");
 	Matriz_dijkstra(MG, 0);

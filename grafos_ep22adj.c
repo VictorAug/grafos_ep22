@@ -75,8 +75,7 @@ void adj_DAGmin(adj_Digraph G, Vertex s)     //só para digrafo
     adj_DIGRAPHShowCST(G);
 }
 
-void adj_dijkstra(adj_Digraph G, Vertex s)
-{
+void adj_dijkstra(adj_Digraph G, Vertex s){
     Vertex v, w;
     Dados *data = malloc(sizeof(Dados));
     link p;
