@@ -101,7 +101,7 @@ void adj_dijkstra(adj_Digraph G, Vertex s){
 int adj_BELLMAN_ford(adj_Digraph G, Vertex s){
     Vertex v, w; link p; int k = 0;
     for(v = 0; v < G->V; v++){
-        cst[v] = maxCST;
+        cst[v] = INFINITO;
         parent[v] = -1;
     }
     QUEUEInit(G->V);
@@ -249,4 +249,30 @@ int DAGtsf(adj_Digraph G){
     }
     QUEUEFree();
     return i;
+}
+void adj_FLOYD_WARSHALL(adj_Digraph G){//Works
+    Vertex s, t, k, v;
+    double d, custo[G->V][G->V];
+    link p;
+    for(v=0;v<G->V;v++)
+        for(t=0; t<G->V; t++)
+            custo[v][t] = INFINITO;
+    for(v=0; v<G->V; v++){
+        for(p = G->adj[v]; p!=NULL; p=p->next){
+            custo[v][p->w] = p->cst;
+        }
+    }
+    for(k=1; k<G->V; k++)
+        for(s=0; s<G->V; s++)
+            for(t=0; t<G->V; t++){
+                if(custo[s][t]!=INFINITO&&custo[s][k-1]!=INFINITO&&custo[k-1][t]!=INFINITO)
+                    if(custo[s][t] > custo[s][k-1] + custo[k-1][t])
+                        custo[s][t] = custo[s][k-1] + custo[k-1][t];
+            }
+    for(k=0; k<G->V; k++){
+        printf("%d|\t", k);
+        for(v=0; v<G->V; v++)
+            printf("%2.1f\t", custo[k][v]);
+        printf("\n");
+    }
 }

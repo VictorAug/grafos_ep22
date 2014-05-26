@@ -13,21 +13,20 @@ int main()
 	adj_Digraph AG, AD;
 	m_Digraph MG, MD;
 	AD = adj_DIGRAPHInit(6);
-	adj_DIGRAPHInsertA(AD, 0, 2, 7);
-	adj_DIGRAPHInsertA(AD, 0, 3, 2);
-	adj_DIGRAPHInsertA(AD, 0, 4, 4);
-	adj_DIGRAPHInsertA(AD, 1, 2, 0);
-	adj_DIGRAPHInsertA(AD, 2, 4, 1);
-	adj_DIGRAPHInsertA(AD, 3, 4, 1);
-	adj_DIGRAPHInsertA(AD, 3, 5, 3);
-	adj_DIGRAPHInsertA(AD, 4, 1, 4);
-	adj_DIGRAPHInsertA(AD, 4, 5, 1);
-	adj_DIGRAPHInsertA(AD, 5, 1, 2);
+	adj_DIGRAPHInsertA(AD, 0, 3, 6);
+	adj_DIGRAPHInsertA(AD, 0, 1, 4);
+	adj_DIGRAPHInsertA(AD, 3, 1, -5);
+	adj_DIGRAPHInsertA(AD, 3, 4, -7);
+	adj_DIGRAPHInsertA(AD, 1, 4, -4);
+	adj_DIGRAPHInsertA(AD, 1, 2, 1);
+	adj_DIGRAPHInsertA(AD, 4, 2, 4);
+	adj_FLOYD_WARSHALL(AD);
+
 	/*DAGtsf(AD);
 	adj_DIGRAPHShowTS(AD);
 	adj_DAGmin(AD, 0);*/
 
-	adj_dijkstra(AD, 0);
+	//adj_dijkstra(AD, 0);
 
 	/*Matriz_DIGRAPHInsertA(MG,0,2,7);
 	Matriz_DIGRAPHInsertA(MG,0,3,2);
