@@ -4,17 +4,16 @@
 #include "grafos_ep22PQ.h"
 
 link NEW(Vertex w, double cst, link next){
-    link x = malloc(sizeof(link));
+    link x = malloc(sizeof*x);
     x->w = w;
     x->cst = cst;
     x->next = next;
-    printf("news finished\n");
     return x;
 }
 
 adj_Digraph adj_DIGRAPHInit(int V){
     Vertex v;
-    adj_Digraph G = malloc(sizeof(adj_Digraph));
+    adj_Digraph G = malloc(sizeof*G);
     G->V = V;
     G->A = 0;
     G->adj = malloc(V*sizeof(link));
@@ -25,12 +24,12 @@ adj_Digraph adj_DIGRAPHInit(int V){
 
 void adj_DIGRAPHInsertA(adj_Digraph G, Vertex v, Vertex w, double cst){
     link p;
-    if(v == w) return;
+    if(v == w) 
+        return;
     for(p = G->adj[v]; p != NULL; p = p->next)
-        if(p->w == w) return;
-    printf("1\n");
-    G->adj[v] = NEW(p->w, cst, G->adj[v]);
-    printf("2\n");
+        if(p->w == w) 
+            return;
+    G->adj[v] = NEW(w, cst, G->adj[v]);
     G->A++;
 }
 
@@ -47,11 +46,9 @@ void adj_DIGRAPHShow(adj_Digraph G){
 	Vertex v;
 	link p;
 	for (v = 0; v < G->V; v++){
-		printf("|%2d| ", v);
-		for (p = G->adj[v]; p != NULL; p = p->next){
-			printf("->| %2d |", p->w);
-			printf("%3.2lf|");
-		}
+		printf("%d\t", v);
+		for (p = G->adj[v]; p != NULL; p = p->next)
+            printf("%d -- %2.1f\t", p->w, p->cst);
 		printf("\n");
 	}
 }
@@ -62,9 +59,7 @@ void adj_DAGmin(adj_Digraph G, Vertex s){//só para digrafo
     int i;
     for(v = 0; v < G->V; v++)
         cst[v] = INFINITO;
-    adj_DIGRAPHShowCST(G);
     cst[s] = 0;
-    adj_DIGRAPHShowCST(G);
     for(v = ts[i=0]; i < G->V; v = ts[i++])
         for(p = G->adj[v]; p != NULL; p = p->next)
             if(cst[p->w] > cst[v] + p->cst)
@@ -74,34 +69,36 @@ void adj_DAGmin(adj_Digraph G, Vertex s){//só para digrafo
 
 void adj_dijkstra(adj_Digraph G, Vertex s){
     Vertex v, w;
-    Dados *data = malloc(sizeof(Dados));
     link p;
     for(v = 0; v < G->V; v++){
         cst[v] = INFINITO;
         parent[v] = -1;
     }
-    Lista *l;
-    l = PQInit(G->V);
-    data->prior = s;
-    data->v = G->V;
-    cst[s] = 0;
-    parent[s] = s;
-    PQInsert(&l, data);
+    Lista *l = PQInit(G->V);
+    Dados *Vertice = malloc(sizeof(Dados));
+    Vertice->prior = cst[s] = 0;
+    Vertice->v = parent[s] = s;
+    PQInsert(&l, Vertice);
     while(!PQEmpty(&l)){
-        v = PQDelmin(&l);
+        listar(l);
+        printf("%d\n\n", v = PQDelmin(&l));
         for(p = G->adj[v]; p != NULL; p = p->next)
             if(cst[w=p->w] == INFINITO){
                 parent[w] = v;
-                cst[w] = cst[v] + p->cst;
-                PQInsert(&l,data);
+                Vertice->prior = cst[w] = cst[v] + p->cst;
+                Vertice->v = w;
+                PQInsert(&l,Vertice);
+                listar(l);
             }
             else if(cst[w] > cst[v] + p->cst){
                 parent[w] = v;
                 cst[w] = cst[v] + p->cst;
-                PQDec(&l,w);
+                PQDec(&l,cst[w]);
+                listar(l);
             }
     }
-    listar(l);
+    adj_DIGRAPHShowCST(G);
+    adj_DIGRAPHShowPARENT(G);
 }
 
 int adj_BELLMAN_ford(adj_Digraph G, Vertex s){
@@ -169,7 +166,7 @@ void adj_DIGRAPHShowCST(adj_Digraph G){
         printf("+---");
     printf("\n CST");
     for(w = 0; w < G->V; w++)
-        printf("| %d ",cst[w]);
+        printf("| %2.1f ",cst[w]);
     printf("\n____");
     for(w = 0; w < G->V; w++)
         printf("____");
@@ -233,4 +230,26 @@ void adj_prim2(adj_Digraph G){
 
 void adj_Kruskal(adj_Digraph G){
 
+}
+int DAGtsf(adj_Digraph G){
+    int i, in[G->V];
+    Vertex v;
+    link p;
+    for(v=0; v<G->V; v++)
+        in[v] = 0;
+    for(v=0; v<G->V; v++)
+        for(p=G->adj[v]; p!=NULL; p=p->next)
+            in[p->w]++;
+    QUEUEInit(G->V);
+    for(v=0; v<G->V; v++)
+        if(in[v] == 0)
+            QUEUEPut(v);
+    for(i=0; !QUEUEEmpty();i++){
+        ts[i] = v = QUEUEGet();
+        for(p=G->adj[v]; p!=NULL; p=p->next)
+            if(--in[p->w] == 0)
+                QUEUEPut(p->w);
+    }
+    QUEUEFree();
+    return i;
 }

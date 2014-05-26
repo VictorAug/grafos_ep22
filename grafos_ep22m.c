@@ -276,9 +276,6 @@ void Matriz_prim1(m_Digraph G){
                 fr[w] = v;
             }
     }
-    //Matriz_DIGRAPHShowCST(G);
-    //Matriz_DIGRAPHShowPARENT(G);
-    
     printf("Vertex\t");
     for(v=0; v<G->V; v++)
         printf("%d\t", v);

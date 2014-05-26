@@ -27,7 +27,7 @@ Vertex QUEUEGet()//é o elemento da primeira posicao
 
 int QUEUEEmpty()
 {
-    return i == 0;
+    return i == 0?1:0;
 }
 
 void QUEUEFree()
