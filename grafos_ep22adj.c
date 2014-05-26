@@ -80,21 +80,18 @@ void adj_dijkstra(adj_Digraph G, Vertex s){
     Vertice->v = parent[s] = s;
     PQInsert(&l, Vertice);
     while(!PQEmpty(&l)){
-        listar(l);
-        printf("%d\n\n", v = PQDelmin(&l));
+        v = PQDelmin(&l);
         for(p = G->adj[v]; p != NULL; p = p->next)
             if(cst[w=p->w] == INFINITO){
                 parent[w] = v;
                 Vertice->prior = cst[w] = cst[v] + p->cst;
                 Vertice->v = w;
                 PQInsert(&l,Vertice);
-                listar(l);
             }
             else if(cst[w] > cst[v] + p->cst){
                 parent[w] = v;
                 cst[w] = cst[v] + p->cst;
                 PQDec(&l,cst[w]);
-                listar(l);
             }
     }
     adj_DIGRAPHShowCST(G);
@@ -191,7 +188,7 @@ void adj_DIGRAPHShowPARENT(adj_Digraph G){
         printf("+---");
     printf("\n PARENT");
     for(w = 0; w < G->V; w++)
-        printf("| %d ",cst[w]);
+        printf("| %d ",parent[w]);
     printf("\n_______");
     for(w = 0; w < G->V; w++)
         printf("____");

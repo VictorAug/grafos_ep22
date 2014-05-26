@@ -13,7 +13,6 @@ int main()
 	adj_Digraph AG, AD;
 	m_Digraph MG, MD;
 	AD = adj_DIGRAPHInit(6);
-	printf("Criou matriz AD\n");
 	adj_DIGRAPHInsertA(AD, 0, 2, 7);
 	adj_DIGRAPHInsertA(AD, 0, 3, 2);
 	adj_DIGRAPHInsertA(AD, 0, 4, 4);
@@ -24,7 +23,6 @@ int main()
 	adj_DIGRAPHInsertA(AD, 4, 1, 4);
 	adj_DIGRAPHInsertA(AD, 4, 5, 1);
 	adj_DIGRAPHInsertA(AD, 5, 1, 2);
-	printf("Inseriu os arcos\n");
 	/*DAGtsf(AD);
 	adj_DIGRAPHShowTS(AD);
 	adj_DAGmin(AD, 0);*/
