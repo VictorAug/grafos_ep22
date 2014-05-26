@@ -3,6 +3,7 @@
 #include "grafos_ep22.h"
 
 typedef struct node *link;
+
 struct node{
     Vertex w;
     double cst;
@@ -20,13 +21,17 @@ link NEW(Vertex, double, link);
 
 adj_Digraph adj_DIGRAPHInit(int);
 
-int adj_GRAPHInsertE(adj_Digraph, Vertex, Vertex, double);
+void adj_GRAPHInsertE(adj_Digraph, Vertex, Vertex, double);
 
 void adj_DIGRAPHInsertA(adj_Digraph, Vertex, Vertex, double);
 
 int adj_BELLMAN_ford(adj_Digraph, Vertex);
 
 void adj_DAGmin(adj_Digraph, Vertex);//só para digrafo
+
+void adj_DAGts2(adj_Digraph);
+
+void adj_TSdfsR(adj_Digraph, Vertex, int*);
 
 void adj_DIGRAPHShowTS(adj_Digraph);
 

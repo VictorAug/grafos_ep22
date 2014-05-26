@@ -3,18 +3,21 @@
 #include "grafos_ep22Q.h"
 #include "grafos_ep22PQ.h"
 
-link NEW(Vertex w, double cst, link next){
-    link x = malloc(sizeof(link));
-    x->w = w;
-    x->cst = cst;
-    x->next = next;
-    printf("news finished\n");
-    return x;
+static int *lbl, *ts, cnt;
+
+link NEW(Vertex w, double cst, link next)
+{
+    link p = malloc(sizeof *p);
+    p->w = w;
+    p->cst = cst;
+    p->next = next;
+    return p;
 }
 
-adj_Digraph adj_DIGRAPHInit(int V){
+adj_Digraph adj_DIGRAPHInit(int V)
+{
     Vertex v;
-    adj_Digraph G = malloc(sizeof(adj_Digraph));
+    adj_Digraph G = malloc(sizeof *G);
     G->V = V;
     G->A = 0;
     G->adj = malloc(V*sizeof(link));
@@ -23,48 +26,59 @@ adj_Digraph adj_DIGRAPHInit(int V){
     return G;
 }
 
-void adj_DIGRAPHInsertA(adj_Digraph G, Vertex v, Vertex w, double cst){
+void adj_DIGRAPHInsertA(adj_Digraph G, Vertex v, Vertex w, double cst)
+{
     link p;
     if(v == w) return;
-    for(p = G->adj[v]; p != NULL; p = p->next)
+    for(p = G->adj[v]; p != NULL; p = p->next){
         if(p->w == w) return;
-    printf("1\n");
-    G->adj[v] = NEW(p->w, cst, G->adj[v]);
-    printf("2\n");
-    G->A++;
+        G->adj[v] = NEW(p->w, cst, NULL);
+        G->A++;
+    }
 }
 
-int adj_GRAPHInsertE(adj_Digraph G, Vertex v, Vertex w, double cst){
-	if(G->V > v && G->V > w && v != w){
-		adj_DIGRAPHInsertA(G,w,v,cst);
-		adj_DIGRAPHInsertA(G,v,w,cst);
-		return 1;
+void adj_GRAPHInsertE(adj_Digraph G, Vertex v, Vertex w, double cst)
+{
+	if(v < G->V && w < G->V && v != w)
+    {
+        adj_DIGRAPHInsertA(G,v,w,cst);
+        adj_DIGRAPHInsertA(G,w,v,cst);
+        G->A--;
 	}
-	else return 0;
 }
 
-void adj_DIGRAPHShow(adj_Digraph G){
+void adj_DIGRAPHShow(adj_Digraph G)
+{
 	Vertex v;
 	link p;
-	for (v = 0; v < G->V; v++){
-		printf("|%2d| ", v);
+	printf("\n| V |");
+	for(v = 0; v < G->V; v++)
+        printf("");
+    printf("\n");
+	printf("+--+");
+	printf("\n");
+	for (v = 0; v < G->V; v++)
+	{
+		printf("|%2d| ->", v);
 		for (p = G->adj[v]; p != NULL; p = p->next){
-			printf("->| %2d |", p->w);
-			printf("%3.2lf|");
+			printf("| %2d |", p->w);
+			printf("%3.2lf|",p->cst);
 		}
 		printf("\n");
 	}
+	printf("\n");
 }
 
-void adj_DAGmin(adj_Digraph G, Vertex s){//só para digrafo
+void adj_DAGmin(adj_Digraph G, Vertex s)     //só para digrafo
+{
     Vertex v;
     link p;
     int i;
+    ts = malloc((G->V)*sizeof(int));
+    adj_DAGts2(G);
     for(v = 0; v < G->V; v++)
         cst[v] = INFINITO;
-    adj_DIGRAPHShowCST(G);
     cst[s] = 0;
-    adj_DIGRAPHShowCST(G);
     for(v = ts[i=0]; i < G->V; v = ts[i++])
         for(p = G->adj[v]; p != NULL; p = p->next)
             if(cst[p->w] > cst[v] + p->cst)
@@ -72,11 +86,35 @@ void adj_DAGmin(adj_Digraph G, Vertex s){//só para digrafo
     adj_DIGRAPHShowCST(G);
 }
 
-void adj_dijkstra(adj_Digraph G, Vertex s){
+void adj_DAGts2(adj_Digraph G)
+{
+    Vertex v;
+    cnt = G->V - 1;
+    lbl = malloc((G->V)*sizeof(int));
+    for(v = 0; v < G->V; v++)
+        ts[v] = lbl[v] = -1;
+    for(v = 0; v < G->V; v++)
+        if(lbl[v] == -1)
+            adj_TSdfsR(G, v, lbl);
+}
+
+void adj_TSdfsR(adj_Digraph G, Vertex v, int* lbl)
+{
+    link p;
+    lbl[v] = 0;
+    for(p = G->adj[v]; p != NULL; p = p->next)
+        if(lbl[p->w] == -1)
+            adj_TSdfsR(G, p->w, lbl);
+    ts[cnt--] = v;
+}
+
+void adj_dijkstra(adj_Digraph G, Vertex s)
+{
     Vertex v, w;
     Dados *data = malloc(sizeof(Dados));
     link p;
-    for(v = 0; v < G->V; v++){
+    for(v = 0; v < G->V; v++)
+    {
         cst[v] = INFINITO;
         parent[v] = -1;
     }
@@ -87,15 +125,18 @@ void adj_dijkstra(adj_Digraph G, Vertex s){
     cst[s] = 0;
     parent[s] = s;
     PQInsert(&l, data);
-    while(!PQEmpty(&l)){
+    while(!PQEmpty())
+    {
         v = PQDelmin(&l);
         for(p = G->adj[v]; p != NULL; p = p->next)
-            if(cst[w=p->w] == INFINITO){
+            if(cst[w=p->w] == INFINITO)
+            {
                 parent[w] = v;
                 cst[w] = cst[v] + p->cst;
                 PQInsert(&l,data);
             }
-            else if(cst[w] > cst[v] + p->cst){
+            else if(cst[w] > cst[v] + p->cst)
+            {
                 parent[w] = v;
                 cst[w] = cst[v] + p->cst;
                 PQDec(&l,w);
@@ -104,9 +145,11 @@ void adj_dijkstra(adj_Digraph G, Vertex s){
     listar(l);
 }
 
-int adj_BELLMAN_ford(adj_Digraph G, Vertex s){
+int adj_BELLMAN_ford(adj_Digraph G, Vertex s)
+{
     Vertex v, w; link p; int k = 0;
-    for(v = 0; v < G->V; v++){
+    for(v = 0; v < G->V; v++)
+    {
         cst[v] = maxCST;
         parent[v] = -1;
     }
@@ -115,16 +158,19 @@ int adj_BELLMAN_ford(adj_Digraph G, Vertex s){
     parent[s] = s;
     QUEUEPut(s);
     QUEUEPut(SENTINELA);
-    while(!QUEUEEmpty()){
+    while(!QUEUEEmpty())
+    {
         v = QUEUEGet();
-        if(v == SENTINELA){
+        if(v == SENTINELA)
+        {
             if(k++ == G->V){
                 if(!QUEUEEmpty()) return 0;
                 else return 1;
             }
             QUEUEPut(SENTINELA);
         }
-        else{
+        else
+        {
             for(p = G->adj[v]; p != NULL; p = p->next)
                 if(cst[w=p->w] > cst[v] + p->cst){
                     cst[w] = cst[v] + p->cst;
@@ -136,7 +182,8 @@ int adj_BELLMAN_ford(adj_Digraph G, Vertex s){
     return 0;
 }
 
-void adj_DIGRAPHShowTS(adj_Digraph G){
+void adj_DIGRAPHShowTS(adj_Digraph G)
+{
     Vertex w;
     printf("___");
     for(w = 0; w < G->V; w++)
@@ -155,12 +202,13 @@ void adj_DIGRAPHShowTS(adj_Digraph G){
     printf("\n\n");
 }
 
-void adj_DIGRAPHShowCST(adj_Digraph G){
+void adj_DIGRAPHShowCST(adj_Digraph G)
+{
     Vertex w;
     printf("_______");
     for(w = 0; w < G->V; w++)
         printf("____");
-    printf("\n");
+    printf("\n\n");
     printf("  i ");
     for(w = 0; w < G->V; w++)
         printf("| %d ",w);
@@ -176,11 +224,13 @@ void adj_DIGRAPHShowCST(adj_Digraph G){
     printf("\n\n");
 }
 
-void adj_DIGRAPHdel(adj_Digraph G){
+void adj_DIGRAPHdel(adj_Digraph G)
+{
     free(G);
 }
 
-void adj_DIGRAPHShowPARENT(adj_Digraph G){
+void adj_DIGRAPHShowPARENT(adj_Digraph G)
+{
     Vertex w;
     printf("_______");
     for(w = 0; w < G->V; w++)
@@ -201,7 +251,8 @@ void adj_DIGRAPHShowPARENT(adj_Digraph G){
     printf("\n\n");
 }
 
-void adj_prim2(adj_Digraph G){
+void adj_prim2(adj_Digraph G)
+{
     link p; Vertex v, w;Lista *l;Dados *data;
     PQInit(G->V);
     for(v = 0; v < G->V; v++)
@@ -210,12 +261,15 @@ void adj_prim2(adj_Digraph G){
     cst[v] = 0;
     fr[v] = v;
     PQInsert(&l,data);
-    while(!PQEmpty(&l)){
+    while(!PQEmpty())
+    {
         v = PQDelmin(&l);
         parent[v] = fr[v];
-        for(p = G->adj[v]; p != NULL; p = p->next){
+        for(p = G->adj[v]; p != NULL; p = p->next)
+        {
             w = p->w;
-            if(parent[w] == -1){
+            if(parent[w] == -1)
+            {
                 if(fr[w] == -1){
                     cst[w] = p->cst;
                     fr[w] = v;
@@ -231,6 +285,7 @@ void adj_prim2(adj_Digraph G){
     }
 }
 
-void adj_Kruskal(adj_Digraph G){
+void adj_Kruskal(adj_Digraph G)
+{
 
 }
