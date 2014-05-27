@@ -121,27 +121,34 @@ void Matriz_FLOYD_WARSHALL(m_Digraph G)
 }*/
 
 void Matriz_FLOYD_WARSHALL(m_Digraph G){//Works
-    Vertex v, s, t, k; double d; Vertex custo[G->V][G->V];
+    Vertex v, s, t, k, i, j; Vertex d; Vertex custo[G->V][G->V];
     for(v = 0; v < G->V; v++)
         for(k=0; k<G->V; k++)
-        custo[v][k] = G->adj[v][k];
-    for(k=1; k<G->V; k++)
-        for(s=0; s<G->V; s++)
-            for(t=0; t<G->V; t++){
-                if(custo[s][k] + custo[k][t] < custo[s][t])
-                    custo[s][t] = custo[s][k] + custo[k][t];
+            if(v==k)
+                custo[v][k] = 0;
+            else
+                custo[v][k] = G->adj[v][k];
+    for(k=0; k<G->V; k++)
+        for(i=0; i<G->V; i++)
+            if(i!=k && custo[i][k]<INFINITO)
+                for(j=0; j<G->V; j++){
+                    d = custo[i][k] + custo[k][j];
+                    if(d < custo[i][j])
+                    custo[i][j] = d;
             }
+    printf("\t");
+    for(k=0; k<G->V; k++)
+        printf("%d\t", k);
+    printf("\n");
     for(k=0; k<G->V; k++){
         printf("%d|\t", k);
         for(v=0; v<G->V; v++)
             printf("%d\t", custo[k][v]);
         printf("\n");
     }
-    //    Matriz_DIGRAPHShowCusto(G, custo);
 }
 
-void Matriz_DIGRAPHShow(m_Digraph G)
-{
+void Matriz_DIGRAPHShow(m_Digraph G){
     Vertex v, w;
     printf("\t");
     for(v = 0; v < G->V; v++)

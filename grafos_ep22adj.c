@@ -196,33 +196,71 @@ void adj_DIGRAPHShowPARENT(adj_Digraph G){
 }
 
 void adj_prim2(adj_Digraph G){
-    link p; Vertex v, w;Lista *l;Dados *data;
-    PQInit(G->V);
+    link p; 
+    Vertex v, w, fr[G->V];
+    Dados *data = malloc(sizeof(Dados));
+    Lista *l = PQInit(G->V);
     for(v = 0; v < G->V; v++)
         parent[v] = fr[v] = -1;
-    v = 0;
-    cst[v] = 0;
+    data->v = v = 0;
+    data->prior = cst[v] = 0;
     fr[v] = v;
     PQInsert(&l,data);
+    listar(l);
     while(!PQEmpty(&l)){
+        listar(l);
         v = PQDelmin(&l);
+        printf("%d\n\n", v);
+        listar(l);
         parent[v] = fr[v];
         for(p = G->adj[v]; p != NULL; p = p->next){
             w = p->w;
             if(parent[w] == -1){
                 if(fr[w] == -1){
-                    cst[w] = p->cst;
+                    data->v = w;
+                    data->prior = cst[w] = p->cst;
                     fr[w] = v;
-                    PQInsert(&l,w);
+                    printf("insert %d --- %d\n", data->v, data->prior);
+                    listar(l);
+                    PQInsert(&l,data);
+                    listar(l);
+                    printf("insert %d\n", w);
                 }
                 else if(cst[w] > p->cst){
                     fr[w] = v;
                     cst[w] = p->cst;
+                    printf("Dec %d\n", w);
+                    listar(l);
                     PQDec(&l,w);
+                    listar(l);
+                    printf("EndDec\n");
                 }
             }
         }
     }
+    printf("Vertex\t");
+    for(v=0; v<G->V; v++)
+        printf("%d\t", v);
+    printf("\nCusto\t");
+    for(v=0; v<G->V; v++)
+        printf("%2.1f\t", cst[v]);
+    printf("\n\n");
+
+    printf("Vertex\t");
+    for(v=0; v<G->V; v++)
+        printf("%d\t", v);
+    printf("\nParent\t");
+    for(v=0; v<G->V; v++)
+        printf("%d\t", parent[v]);
+    printf("\n\n");
+
+    printf("Vertex\t");
+    for(v=0; v<G->V; v++)
+        printf("%d\t", v);
+    printf("\nFranja\t");
+    for(v=0; v<G->V; v++)
+        printf("%2.1f\t", fr[v]);
+    printf("\n");//works
 }
 
 void adj_Kruskal(adj_Digraph G){
@@ -250,29 +288,32 @@ int DAGtsf(adj_Digraph G){
     QUEUEFree();
     return i;
 }
+/*
 void adj_FLOYD_WARSHALL(adj_Digraph G){//Works
-    Vertex s, t, k, v;
+    Vertex s, t, k, v, i, j;
     double d, custo[G->V][G->V];
     link p;
-    for(v=0;v<G->V;v++)
-        for(t=0; t<G->V; t++)
-            custo[v][t] = INFINITO;
-    for(v=0; v<G->V; v++){
-        for(p = G->adj[v]; p!=NULL; p=p->next){
-            custo[v][p->w] = p->cst;
-        }
-    }
-    for(k=1; k<G->V; k++)
-        for(s=0; s<G->V; s++)
-            for(t=0; t<G->V; t++){
-                if(custo[s][t]!=INFINITO&&custo[s][k-1]!=INFINITO&&custo[k-1][t]!=INFINITO)
-                    if(custo[s][t] > custo[s][k-1] + custo[k-1][t])
-                        custo[s][t] = custo[s][k-1] + custo[k-1][t];
-            }
+    //for(v=0;v<G->V;v++)
+        //for(t=0; t<G->V; t++)
+            //custo[v][t] = INFINITO;
+
+    for(v=0; v<G->V; v++)
+        for(p = G->adj[v]; p!=NULL; p=p->next)
+            if(v==p->w)
+                custo[v][p->w] = 0;
+            else
+                custo[v][p->w] = p->cst;
+    
+    for(k=0; k<G->V; k++)
+        for(i=0; i<G->V; i++)
+            for(j=0; j<G->V; j++)
+                if ((custo[i][k] * custo[k][j] != 0) && (i != j))
+                    if ((custo[i][k] + custo[k][j] < custo[i][j]) || (custo[i][j] == 0))
+                        custo[i][j] = custo[i][k] + custo[k][j];
     for(k=0; k<G->V; k++){
         printf("%d|\t", k);
         for(v=0; v<G->V; v++)
             printf("%2.1f\t", custo[k][v]);
         printf("\n");
     }
-}
+}*/
