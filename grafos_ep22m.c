@@ -19,6 +19,12 @@ m_Digraph Matriz_DIGRAPHInit(int V){
     m_Digraph G = malloc(sizeof(m_Digraph));
     G->V = V;
     G->A = 0;
+    custo = malloc(V*sizeof(double));
+    parent = malloc(V*sizeof(int));
+    fr = malloc(V*sizeof(int));
+    cst = malloc(V*sizeof(double));
+    ts = malloc(V*sizeof(Vertex));
+    //variáveis globais declaradas em grafos_ep22.h
     G->adj = MATRIXDouble(V,V,INFINITO);
     return G;
 }
@@ -142,6 +148,112 @@ void Matriz_FLOYD_WARSHALL(m_Digraph G){//Works
 
 void Matriz_DIGRAPHShow(m_Digraph G)
 {
+	Vertex v, w;
+	printf("\t");
+	for(v = 0; v < G->V; v++)
+        printf("|  %2d \t",v);
+    printf("\n--------+-------");
+    for(v = 0; v < G->V-1; v++)
+        printf("+-------");
+	for(v = 0; v < G->V; v++){
+		printf("\n    %2d\t", v);
+		for(w = 0; w < G->V; w++){
+			if(G->adj[v][w] != INFINITO)
+				printf("| %3.2lf\t",G->adj[v][w]);
+			else printf("|   *\t");
+		}
+	}
+	printf("\n");
+}
+
+void Matriz_DIGRAPHShowCCST(Vertex V, double **d)
+{
+	Vertex v, w;
+	printf("\t");
+	for(v = 0; v < V; v++)
+        printf("|  %3.2d \t",v);
+    printf("\n--------+-------");
+    for(v = 0; v < V-1; v++)
+        printf("+-------");
+	for(v = 0; v < V; v++){
+		printf("\n    %3.2d\t", v);
+		for(w = 0; w < V; w++){
+			if(d[v][w] != INFINITO)
+				printf("| %3.2lf\t",d[v][w]);
+			else printf("|   *\t");
+		}
+	}
+	printf("\n");
+}
+
+void Matriz_DIGRAPHShowCST(m_Digraph G)
+{
+    Vertex w;
+    for(w = -1; w < G->V; w++)
+        printf("________");
+    printf("\n\n      i ");
+    for(w = 0; w < G->V; w++)
+        printf("|  %2d\t",w);
+    printf("\n--------+-------");
+    for(w = 1; w < G->V; w++)
+        printf("+-------");
+    printf("\n     CST");
+    for(w = 0; w < G->V; w++){
+        if(cst[w] != INFINITO)
+            printf("| %3.2lf\t",cst[w]);
+        else
+            printf("|   *\t");
+    }
+    printf("\n");
+    for(w = -1; w < G->V; w++)
+        printf("________");
+    printf("\n\n");
+}
+
+void Matriz_DIGRAPHShowPARENT(m_Digraph G)
+{
+    Vertex w;
+    for(w = -1; w < G->V; w++)
+        printf("________");
+    printf("\n\n      i ");
+    for(w = 0; w < G->V; w++)
+        printf("|  %2d\t",w);
+    printf("\n--------+-------");
+    for(w = 1; w < G->V; w++)
+        printf("+-------");
+    printf("\n  PARENT");
+    for(w = 0; w < G->V; w++)
+        printf("|  %2d\t",parent[w]);
+    printf("\n");
+    for(w = -1; w < G->V; w++)
+        printf("________");
+    printf("\n\n");
+}
+
+void Matriz_DIGRAPHShowTS(m_Digraph G)
+{
+    Vertex w;
+    printf("_______");
+    for(w = 0; w < G->V; w++)
+        printf("____");
+    printf("\n");
+    printf("  i ");
+    for(w = 0; w < G->V; w++)
+        printf("| %d ",w);
+    printf("\n---+---");
+    for(w = 1; w < G->V; w++)
+        printf("+---");
+    printf("\n TS");
+    for(w = 0; w < G->V; w++)
+        printf("| %d ",ts[w]);
+    printf("\n_______");
+    for(w = 0; w < G->V; w++)
+        printf("____");
+    printf("\n\n");
+}
+
+/*void Matriz_DIGRAPHShow(m_Digraph G)
+{
     Vertex v, w;
     printf("\t");
     for(v = 0; v < G->V; v++)
@@ -247,7 +359,7 @@ void Matriz_DIGRAPHShowTS(m_Digraph G)
     for(w = 0; w < G->V; w++)
         printf("____");
     printf("\n\n");
-}
+}*/
 
 void Matriz_DIGRAPHdel(m_Digraph G){
     free(G);
@@ -276,7 +388,7 @@ void Matriz_prim1(m_Digraph G){
                 fr[w] = v;
             }
     }
-    printf("Vertex\t");
+    /*printf("Vertex\t");
     for(v=0; v<G->V; v++)
         printf("%d\t", v);
     printf("\nCusto\t");
@@ -299,7 +411,10 @@ void Matriz_prim1(m_Digraph G){
     printf("\nFranja\t");
     for(v=0; v<G->V; v++)
         printf("%2.1f\t", fr[v]);
-    printf("\n");//works
+    printf("\n");*/
+    Matriz_DIGRAPHShowCST(G);
+    Matriz_DIGRAPHShowPARENT(G);
+    Matriz_DIGRAPHShowFR(G);
 }
 
 void Matriz_dijkstra(m_Digraph G, Vertex s){//works
@@ -331,3 +446,25 @@ void Matriz_dijkstra(m_Digraph G, Vertex s){//works
     Matriz_DIGRAPHShowCST(G);
     Matriz_DIGRAPHShowPARENT(G);
 }
+
+void Matriz_DIGRAPHShowFR(m_Digraph G)
+{
+    Vertex w;
+    printf("________");
+    for(w = 0; w < G->V; w++)
+        printf("________");
+    printf("\n\n      i ");
+    for(w = 0; w < G->V; w++)
+        printf("|   %d\t",w);
+    printf("\n--------+-------");
+    for(w = 1; w < G->V; w++)
+        printf("+-------");
+    printf("\n FRANJA ");
+    for(w = 0; w < G->V; w++)
+        printf("|   %d\t",fr[w]);
+    printf("\n________");
+    for(w = 0; w < G->V; w++)
+        printf("________");
+    printf("\n\n");
+}
+
