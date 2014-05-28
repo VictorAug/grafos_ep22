@@ -56,10 +56,10 @@ void adj_DIGRAPHInsertA(adj_Digraph G, Vertex v, Vertex w, double cst)
         G->A++;
     }
 =======
-    if(v == w)
+    if(v == w) 
         return;
     for(p = G->adj[v]; p != NULL; p = p->next)
-        if(p->w == w)
+        if(p->w == w) 
             return;
     G->adj[v] = NEW(w, cst, G->adj[v]);
     G->A++;
@@ -457,9 +457,7 @@ void adj_prim2(adj_Digraph G)
             }
         }
     }
-    adj_DIGRAPHShowCST(G);
-    adj_DIGRAPHShowPARENT(G);
-    adj_DIGRAPHShowFRANJA(G);
+    
 }
 
 void adj_Kruskal(adj_Digraph G)
