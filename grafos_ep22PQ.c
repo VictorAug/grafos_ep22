@@ -61,9 +61,9 @@ int PQIncrease(Lista **l, int i, Dados *chave)
     (*l)->Data[i].prior = chave->prior;
     (*l)->Data[i].v = chave->v;
     while(i > -1 && (*l)->Data[i/2].prior > (*l)->Data[i].prior){
-        int buffer = (*l)->Data[i/2].prior;
-        (*l)->Data[i/2].prior = (*l)->Data[i].prior;
-        (*l)->Data[i].prior = buffer;
+        Dados Buf = (*l)->Data[i/2];
+        (*l)->Data[i/2] = (*l)->Data[i];
+        (*l)->Data[i] = Buf;
         i = i/2;
     }
     return 1;
