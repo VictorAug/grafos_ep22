@@ -25,7 +25,18 @@ int main()
 	adj_GRAPHInsertE(AD, 4, 6, 14);
 	adj_GRAPHInsertE(AD, 4, 5, 12);
 	adj_GRAPHInsertE(AD, 5, 6, 4);
+	printf("\n\nPrim - Lista\n\n");
 	adj_prim2(AD);
+	/*printf("\n\nDAGmin\n\n");
+	DAGtsf(AD);
+	adj_DAGmin(AD, 0);
+	printf("\n\nDijkstra\n\n");
+	adj_dijkstra(AD, 0);
+	printf("\n\nBellmanFord\n\n");
+	adj_BELLMAN_ford(AD, 0);
+	adj_DIGRAPHShowCST(AD);
+	adj_DIGRAPHShowPARENT(AD);*/
+	printf("----------------------------------------------------------\n");
 	MG = Matriz_DIGRAPHInit(7);
 	Matriz_GRAPHInsertE(MG, 0, 2, 5);
 	Matriz_GRAPHInsertE(MG, 0, 3, 8);
@@ -39,12 +50,19 @@ int main()
 	Matriz_GRAPHInsertE(MG, 4, 6, 14);
 	Matriz_GRAPHInsertE(MG, 4, 5, 12);
 	Matriz_GRAPHInsertE(MG, 5, 6, 4);
+	printf("\n\nPrim - Matriz\n\n");
 	Matriz_prim1(MG);
-
-	/*DAGtsf(AD);
-	adj_DIGRAPHShowTS(AD);
-	adj_DAGmin(AD, 0);*/
-
+	/*printf("\n\nDijkstra\n\n");
+	Matriz_dijkstra(MG, 0);
+	printf("\n\nFloyd\n\n");
+	Matriz_FLOYD_WARSHALL(MG);
+	printf("\n\nBellmanFord1\n\n");
+	Matriz_BELLMAN_ford1(MG, 0);
+	printf("\n\nBellmanFord2\n\n");
+	Matriz_BELLMAN_ford2(MG, 0);
+	Matriz_DIGRAPHShowCST(MG);
+	Matriz_DIGRAPHShow(MG);
+	adj_DIGRAPHShow(AD);*/
 	//adj_dijkstra(AD, 0);
 	//MG = Matriz_DIGRAPHInit(5);
 	/*Matriz_DIGRAPHInsertA(MG,0,2,7);

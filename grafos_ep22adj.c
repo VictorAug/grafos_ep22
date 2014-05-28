@@ -53,19 +53,6 @@ void adj_DIGRAPHShow(adj_Digraph G){
 	}
 }
 
-void adj_DAGmin(adj_Digraph G, Vertex s){//só para digrafo
-    Vertex v;
-    link p;
-    int i;
-    for(v = 0; v < G->V; v++)
-        cst[v] = INFINITO;
-    cst[s] = 0;
-    for(v = ts[i=0]; i < G->V; v = ts[i++])
-        for(p = G->adj[v]; p != NULL; p = p->next)
-            if(cst[p->w] > cst[v] + p->cst)
-                cst[p->w] = cst[v] + p->cst;
-    adj_DIGRAPHShowCST(G);
-}
 
 void adj_dijkstra(adj_Digraph G, Vertex s){
     Vertex v, w;
@@ -113,12 +100,16 @@ int adj_BELLMAN_ford(adj_Digraph G, Vertex s){
         v = QUEUEGet();
         if(v == SENTINELA){
             if(k++ == G->V){
-                if(!QUEUEEmpty()) return 0;
-                else return 1;
+                if(!QUEUEEmpty()){
+                    QUEUEFree(); 
+                    return 0;
+                }else{
+                    QUEUEFree();
+                return 1;
+                }
             }
             QUEUEPut(SENTINELA);
-        }
-        else{
+        }else{
             for(p = G->adj[v]; p != NULL; p = p->next)
                 if(cst[w=p->w] > cst[v] + p->cst){
                     cst[w] = cst[v] + p->cst;
@@ -127,6 +118,7 @@ int adj_BELLMAN_ford(adj_Digraph G, Vertex s){
                 }
         }
     }
+    QUEUEFree();
     return 0;
 }
 
@@ -206,12 +198,8 @@ void adj_prim2(adj_Digraph G){
     data->prior = cst[v] = 0;
     fr[v] = v;
     PQInsert(&l,data);
-    listar(l);
     while(!PQEmpty(&l)){
-        listar(l);
         v = PQDelmin(&l);
-        printf("%d\n\n", v);
-        listar(l);
         parent[v] = fr[v];
         for(p = G->adj[v]; p != NULL; p = p->next){
             w = p->w;
@@ -220,20 +208,12 @@ void adj_prim2(adj_Digraph G){
                     data->v = w;
                     data->prior = cst[w] = p->cst;
                     fr[w] = v;
-                    printf("insert %d --- %d\n", data->v, data->prior);
-                    listar(l);
                     PQInsert(&l,data);
-                    listar(l);
-                    printf("insert %d\n", w);
                 }
                 else if(cst[w] > p->cst){
                     fr[w] = v;
                     cst[w] = p->cst;
-                    printf("Dec %d\n", w);
-                    listar(l);
                     PQDec(&l,w);
-                    listar(l);
-                    printf("EndDec\n");
                 }
             }
         }
@@ -259,7 +239,7 @@ void adj_prim2(adj_Digraph G){
         printf("%d\t", v);
     printf("\nFranja\t");
     for(v=0; v<G->V; v++)
-        printf("%2.1f\t", fr[v]);
+        printf("%d\t", fr[v]);
     printf("\n");//works
 }
 
@@ -270,23 +250,38 @@ int DAGtsf(adj_Digraph G){
     int i, in[G->V];
     Vertex v;
     link p;
+    QUEUEInit(G->V);
     for(v=0; v<G->V; v++)
         in[v] = 0;
     for(v=0; v<G->V; v++)
         for(p=G->adj[v]; p!=NULL; p=p->next)
             in[p->w]++;
-    QUEUEInit(G->V);
     for(v=0; v<G->V; v++)
         if(in[v] == 0)
             QUEUEPut(v);
     for(i=0; !QUEUEEmpty();i++){
         ts[i] = v = QUEUEGet();
+        printf("%d\n", v);
         for(p=G->adj[v]; p!=NULL; p=p->next)
             if(--in[p->w] == 0)
                 QUEUEPut(p->w);
     }
     QUEUEFree();
+    adj_DIGRAPHShowTS(G);
     return i;
+}
+void adj_DAGmin(adj_Digraph G, Vertex s){//só para digrafo
+    Vertex v;
+    link p;
+    int i;
+    for(v = 0; v < G->V; v++)
+        cst[v] = INFINITO;
+    cst[s] = 0;
+    for(v = ts[i=0]; i < G->V; v = ts[i++])
+        for(p = G->adj[v]; p != NULL; p = p->next)
+            if(cst[p->w] > cst[v] + p->cst)
+                cst[p->w] = cst[v] + p->cst;
+    adj_DIGRAPHShowCST(G);
 }
 /*
 void adj_FLOYD_WARSHALL(adj_Digraph G){//Works

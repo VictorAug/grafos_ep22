@@ -81,6 +81,7 @@ void Matriz_BELLMAN_ford1(m_Digraph G, Vertex s){//Works
         printf("%d|\t", k);
         for(v=0; v<G->V; v++)
             printf("%d\t", custo[k][v]);
+        printf("\n");
     }
 }
 
